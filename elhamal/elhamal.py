@@ -3,7 +3,7 @@ import random
 
 class ElHamal:
 
-    def __init__(self, keys=None):
+    def __init__(self):
         random.seed()
 
     @staticmethod
@@ -15,10 +15,10 @@ class ElHamal:
         return result
 
     @staticmethod
-    def decrypt(cryptogramm, keys):
+    def decrypt(cryptogram, keys):
         result = ''.join(
             map(lambda crypto_pare: ElHamal.decrypt_symbol(crypto_pare, keys),
-                cryptogramm)
+                cryptogram)
         )
         return result
 
@@ -33,9 +33,9 @@ class ElHamal:
         return result
 
     @staticmethod
-    def decrypt_symbol(crypto_sym, keys):
+    def decrypt_symbol(digram, keys):
         p, g, y, x = keys
-        a, b = crypto_sym
+        a, b = digram
         num = (pow(pow(a, x, p), (p-2), p) * b) % p
         result = chr(num)
         return result
@@ -43,7 +43,7 @@ class ElHamal:
 
     def gen_keys(self):
         p = random.choice(self.prime_numbers())
-        g = self.find_primitive_root_by_mod(p)
+        g = self.get_random_primitive_root_by_mod(p)
         x = random.choice(range(2, p - 1))
         y = pow(g, x, p)
         return [p, g, y, x]
@@ -60,7 +60,7 @@ class ElHamal:
         last_number = end + 1
         end_of_range_for_filter = int(math.sqrt(last_number))
         result = list(range(3, last_number, 2))
-        for x in range(start, end_of_range_for_filter, 2):
+        for x in range(3, end_of_range_for_filter, 2):
             result = list(filter(lambda a: a == x or a % x != 0, result))
         result = list(filter(lambda x: x >= start, result))
         return result
@@ -109,6 +109,6 @@ class ElHamal:
         return result
 
     @staticmethod
-    def find_primitive_root_by_mod(mod):
+    def get_random_primitive_root_by_mod(mod):
         result = random.choice(ElHamal.find_all_primitive_roots(mod))
         return result
