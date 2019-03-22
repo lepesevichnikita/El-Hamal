@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="main.qml">resources/main.qml</file>
+        <file alias="Encrypt.qml">resources/Encrypt.qml</file>
+        <file alias="Decrypt.qml">resources/Decrypt.qml</file>
+        <file alias="GenKeys.qml">resources/GenKeys.qml</file>
+    </qresource>
+</RCC>

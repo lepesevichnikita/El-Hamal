@@ -1,14 +1,40 @@
 #!/bin/python3
-from elhamal import ElHamal
+import sys
+
+import PyQt5.QtCore
+
+from PyQt5.QtQml import QQmlApplicationEngine, qmlRegisterType, QQmlComponent
+from PyQt5.QtQuick import QQuickView
+from PyQt5.QtGui import QGuiApplication
+from PyQt5.QtCore import QDirIterator, QUrl, qInstallMessageHandler
+
+from src import ElHamalEncryptor, ElHamalDecryptor
+
+import resources_rc
+
+def handleStatusChange(mode, message, context):
+    print(message, context)
 
 def main():
-    keys = ElHamal().gen_keys()
-    print('keys: ', keys)
-    text = input('Enter text for encryption please:')
-    encrypted_text = ElHamal.encrypt(text, keys[:3])
-    print('encryption result:', encrypted_text)
-    decrypted_text = ElHamal.decrypt(encrypted_text, keys)
-    print('Source text:', decrypted_text)
+    mainView = "qrc:///main.qml"
+    application = QGuiApplication(sys.argv)
+    qmlRegisterType(ElHamalEncryptor, 'elhamal', 1, 0, 'Encryptor')
+    qmlRegisterType(ElHamalDecryptor, 'elhamal', 1, 0, 'Decryptor')
+    qInstallMessageHandler(handleStatusChange)
+
+    engine = QQmlApplicationEngine()
+
+    it = QDirIterator(":", QDirIterator.Subdirectories)
+    while it.hasNext():
+        print(it.next())
+
+    engine.load(QUrl(mainView))
+    engine.rootObjects()[0].show()
+    sys.exit(application.exec_())
 
 
-main()
+entry_point = {
+    '__main__': main
+}
+
+entry_point[__name__]()
