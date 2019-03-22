@@ -13,80 +13,104 @@ ColumnLayout {
         id: encryptor
     }
 
-    Label {
+    Button {
         Layout.fillWidth: true
-        text: qsTr("P")
+        text: qsTr("Вставить ключи")
+        onClicked: encryptor.pasteKeysFromClipboard()
     }
 
-    TextField {
-        Layout.fillWidth: true
+    RowLayout {
+        Label {
+            Layout.fillWidth: true
+            text: qsTr("P")
+        }
+        TextField {
+            Layout.fillWidth: true
 
-        text: encryptor.p
-        placeholderText: qsTr("Введите P")
-        onEditingFinished: {
-            encryptor.p = parseInt(text) || 0
-            print("p: ", encryptor.p)
+            text: encryptor.p
+            placeholderText: qsTr("Введите P")
+            onEditingFinished: {
+                encryptor.p = parseInt(text) || 0
+                print("p: ", encryptor.p)
+            }
         }
     }
 
-    Label {
-        Layout.fillWidth: true
-        text: qsTr("G")
-    }
+    RowLayout {
+        Label {
+            Layout.fillWidth: true
+            text: qsTr("G")
+        }
 
-    TextField {
-        Layout.fillWidth: true
+        TextField {
+            Layout.fillWidth: true
 
-        text: encryptor.g
-        placeholderText: qsTr("Введите G")
-        onEditingFinished: {
-            encryptor.g = parseInt(text) || 0
-            print("g: ", encryptor.g)
+            text: encryptor.g
+            placeholderText: qsTr("Введите G")
+            onEditingFinished: {
+                encryptor.g = parseInt(text) || 0
+                print("g: ", encryptor.g)
+            }
         }
     }
 
-    Label {
-        Layout.fillWidth: true
-        text: qsTr("Y")
-    }
+    RowLayout {
+        Label {
+            Layout.fillWidth: true
+            text: qsTr("Y")
+        }
 
-    TextField {
-        Layout.fillWidth: true
+        TextField {
+            Layout.fillWidth: true
 
-        text: encryptor.y
-        placeholderText: qsTr("Введите Y")
-        onEditingFinished: {
-            encryptor.y = parseInt(text) || 0
-            print("y: ", encryptor.y)
+            text: encryptor.y
+            placeholderText: qsTr("Введите Y")
+            onEditingFinished: {
+                encryptor.y = parseInt(text) || 0
+                print("y: ", encryptor.y)
+            }
         }
     }
 
-    Label {
-        Layout.fillWidth: true
-        text: qsTr("Текст для зашифровки")
-    }
+    RowLayout {
+        Label {
+            Layout.fillWidth: true
+            text: qsTr("Текст для зашифровки")
+        }
 
-    TextField {
-        Layout.fillWidth: true
+        TextField {
+            Layout.fillWidth: true
 
-        text: encryptor.sourceMessage
-        placeholderText: qsTr("Введите текст для зашифровки")
-        onEditingFinished: {
-            encryptor.sourceMessage = text
-            print("source message: ", encryptor.sourceMessage)
+            text: encryptor.sourceMessage
+            placeholderText: qsTr("Введите текст для зашифровки")
+            onEditingFinished: {
+                encryptor.sourceMessage = text
+                print("source message: ", encryptor.sourceMessage)
+            }
         }
     }
 
-    Label {
-        Layout.fillWidth: true
-        text: qsTr("Зашифрованный текст")
+    RowLayout {
+        Label {
+            Layout.fillWidth: true
+            text: qsTr("Зашифрованный текст")
+        }
+
+        TextField {
+            Layout.fillWidth: true
+
+            text: encryptor.encryptedMessage
+            placeholderText: qsTr("Ваш зашифрованный текст")
+            readOnly: true
+            selectByMouse: true
+        }
     }
 
-    TextField {
-        Layout.fillWidth: true
-
-        text: encryptor.encryptedMessage
-        placeholderText: qsTr("Ваш зашифрованный текст")
-        readOnly: true
+    RowLayout {
+        Button {
+            Layout.fillWidth: true
+            text: qsTr("Скопировать криптограмму")
+            onClicked: encrypt.copyCryptogramToClipboard()
+        }
     }
 }

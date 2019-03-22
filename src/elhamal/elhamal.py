@@ -60,6 +60,9 @@ class ElHamal:
         g = self.get_random_primitive_root_by_mod(p)
         x = random.choice(range(2, p - 1))
         y = pow(g, x, p)
+        while y == 1:
+            x = random.choice(range(2, p-1))
+            y = pow(g, x, p)
         return [p, g, y, x]
 
     @staticmethod

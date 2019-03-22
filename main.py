@@ -3,12 +3,11 @@ import sys
 
 import PyQt5.QtCore
 
-from PyQt5.QtQml import QQmlApplicationEngine, qmlRegisterType, QQmlComponent
-from PyQt5.QtQuick import QQuickView
+from PyQt5.QtQml import QQmlApplicationEngine, qmlRegisterType
 from PyQt5.QtGui import QGuiApplication
 from PyQt5.QtCore import QDirIterator, QUrl, qInstallMessageHandler
 
-from src import ElHamalEncryptor, ElHamalDecryptor
+from src import ElHamalEncryptor, ElHamalDecryptor, ElHamalKeysGenerator
 
 import resources_rc
 
@@ -20,6 +19,7 @@ def main():
     application = QGuiApplication(sys.argv)
     qmlRegisterType(ElHamalEncryptor, 'elhamal', 1, 0, 'Encryptor')
     qmlRegisterType(ElHamalDecryptor, 'elhamal', 1, 0, 'Decryptor')
+    qmlRegisterType(ElHamalKeysGenerator, 'elhamal', 1, 0, 'KeysGenerator')
     qInstallMessageHandler(handleStatusChange)
 
     engine = QQmlApplicationEngine()

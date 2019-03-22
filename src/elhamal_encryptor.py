@@ -1,7 +1,8 @@
 from .elhamal import ElHamal
 
-from PyQt5.QtCore import QObject, pyqtSignal
+from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot
 from PyQt5.QtCore import pyqtProperty
+from PyQt5.QtGui import QClipboard, QGuiApplication
 
 
 class ElHamalEncryptor(QObject):
@@ -15,6 +16,20 @@ class ElHamalEncryptor(QObject):
         self._g = 0
         self._y = 0
         self._source_message = ""
+        self._clipboard = QGuiApplication.clipboard()
+
+    @pyqtSlot()
+    def copyCryptogramToClipboard(self):
+        self._clipboard.setText(self.encryptedMessage, QClipboard.Clipboard)
+
+    @pyqtSlot()
+    def pasteKeysFromClipboard(self):
+        keys = self._clipboard.text(QClipboard.Clipboard).split(' ')
+        print(keys)
+        keys = [int(x) for x in keys]
+        self._p, self._g, self._y, _ = keys
+        self.keyChanged.emit()
+        self.encryptedMessageChanged.emit()
 
     @pyqtProperty(int, notify=keyChanged)
     def p(self):
