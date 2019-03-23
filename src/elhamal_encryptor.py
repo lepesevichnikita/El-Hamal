@@ -32,7 +32,9 @@ class ElHamalEncryptor(QObject):
         keys = self._clipboard.text(QClipboard.Clipboard).split(' ')
         if len(keys) >= 3 and all(x.isdecimal() for x in keys):
             keys = [int(x) for x in keys]
-            self.p, self.g, self.y = keys[:3]
+            self._p, self._g, self._y = keys[:3]
+            self.keyChanged.emit()
+            self.encryptedMessageChanged.emit()
 
     @pyqtProperty(int, notify=keyChanged)
     def p(self):
@@ -82,7 +84,7 @@ class ElHamalEncryptor(QObject):
     def encryptMessage(self):
         keys = [self._p, self._g, self._y]
         result = ''
-        if len(self._source_message) > 0:
+        if all(x > 0 for x in keys) and len(self._source_message) > 0:
             try:
                 cryptogram = ElHamal.encrypt(self._source_message, keys)
                 result = ElHamal.cryptogram_to_str(cryptogram)

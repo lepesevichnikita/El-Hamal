@@ -24,8 +24,8 @@ class ElHamal:
 
     @staticmethod
     def cryptogram_from_string(cryptogram_str) -> list:
-        result = map(lambda num: int(num), cryptogram_str.split(' '))
-        result = islice(result, 0, None, 2)
+        result = [int(x) for x in cryptogram_str.split(' ')]
+        result = [result[i:i+2] for i in range(0, len(result)-2, 2)]
         result = list(result)
         return result
 

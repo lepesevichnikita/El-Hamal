@@ -28,10 +28,7 @@ ColumnLayout {
 
         text: encryptor.p
         placeholderText: qsTr("Введите P")
-        onEditingFinished: {
-            encryptor.p = parseInt(text) || 0
-            print("p: ", encryptor.p)
-        }
+        onEditingFinished: encryptor.p = parseInt(text) || 0
     }
 
     Label {
@@ -44,10 +41,7 @@ ColumnLayout {
 
         text: encryptor.g
         placeholderText: qsTr("Введите G")
-        onEditingFinished: {
-            encryptor.g = parseInt(text) || 0
-            print("g: ", encryptor.g)
-        }
+        onEditingFinished: encryptor.g = parseInt(text) || 0
     }
 
     Label {
@@ -60,10 +54,7 @@ ColumnLayout {
 
         text: encryptor.y
         placeholderText: qsTr("Введите Y")
-        onEditingFinished: {
-            encryptor.y = parseInt(text) || 0
-            print("y: ", encryptor.y)
-        }
+        onEditingFinished: encryptor.y = parseInt(text) || 0
     }
 
     Label {
@@ -76,10 +67,7 @@ ColumnLayout {
 
         text: encryptor.sourceMessage
         placeholderText: qsTr("Введите текст для зашифровки")
-        onEditingFinished: {
-            encryptor.sourceMessage = text
-            print("source message: ", encryptor.sourceMessage)
-        }
+        onEditingFinished: encryptor.sourceMessage = text
     }
 
     Label {
