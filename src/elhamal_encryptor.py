@@ -18,18 +18,21 @@ class ElHamalEncryptor(QObject):
         self._source_message = ""
         self._clipboard = QGuiApplication.clipboard()
 
+
     @pyqtSlot()
     def copyCryptogramToClipboard(self):
         self._clipboard.setText(self.encryptedMessage, QClipboard.Clipboard)
 
     @pyqtSlot()
+    def copyCryptogramToClipboard(self):
+        self._clipboard.setText(self._encryptedMessage, QClipboard.Clipboard)
+
+    @pyqtSlot()
     def pasteKeysFromClipboard(self):
         keys = self._clipboard.text(QClipboard.Clipboard).split(' ')
-        print(keys)
-        keys = [int(x) for x in keys]
-        self._p, self._g, self._y, _ = keys
-        self.keyChanged.emit()
-        self.encryptedMessageChanged.emit()
+        if len(keys) >= 3 and all(x.isdecimal() for x in keys):
+            keys = [int(x) for x in keys]
+            self.p, self.g, self.y = keys[:3]
 
     @pyqtProperty(int, notify=keyChanged)
     def p(self):
@@ -49,15 +52,8 @@ class ElHamalEncryptor(QObject):
 
     @pyqtProperty(str, notify=encryptedMessageChanged)
     def encryptedMessage(self):
-        keys = [self._p, self._g, self._y]
-        result = ''
-        if len(self._source_message) > 0:
-            try:
-                cryptogram = ElHamal.encrypt(self._source_message, keys)
-                result = ElHamal.cryptogram_to_str(cryptogram)
-            except:
-                result = 'error'
-        return result
+        self.encryptMessage()
+        return self._encryptedMessage
 
     @p.setter
     def p(self, p):
@@ -82,3 +78,14 @@ class ElHamalEncryptor(QObject):
         self._source_message = source_message or ""
         self.sourceMessageChanged.emit()
         self.encryptedMessageChanged.emit()
+
+    def encryptMessage(self):
+        keys = [self._p, self._g, self._y]
+        result = ''
+        if len(self._source_message) > 0:
+            try:
+                cryptogram = ElHamal.encrypt(self._source_message, keys)
+                result = ElHamal.cryptogram_to_str(cryptogram)
+            except:
+                result = 'error'
+        self._encryptedMessage = result

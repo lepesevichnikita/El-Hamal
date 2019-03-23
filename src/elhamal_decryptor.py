@@ -1,6 +1,7 @@
 from .elhamal_encryptor import ElHamal
 
-from PyQt5.QtCore import QObject, pyqtSignal, pyqtProperty
+from PyQt5.QtCore import QObject, pyqtSignal, pyqtProperty, pyqtSlot
+from PyQt5.QtGui import QClipboard, QGuiApplication
 
 
 class ElHamalDecryptor(QObject):
@@ -15,6 +16,23 @@ class ElHamalDecryptor(QObject):
         self._y = 0
         self._x = 0
         self._encryptedMessage = ""
+        self._sourceMessage = ""
+        self._clipboard = QGuiApplication.clipboard()
+
+    @pyqtSlot()
+    def pasteEncryptedMessageFromClipboard(self):
+        self.encryptedMessage = self._clipboard.text(QClipboard.Clipboard)
+
+    @pyqtSlot()
+    def pasteKeysFromClipboard(self):
+        keys = self._clipboard.text(QClipboard.Clipboard).split(' ')
+        if len(keys) >= 4 and all(x.isalnum() for x in keys):
+            keys = [int(x) for x in keys]
+            self.p, self.g, self.y, self.x = keys[:4]
+
+    @pyqtSlot()
+    def copySourceMessageToClipboard(self):
+        self._clipboard.setText(self._sourceMessage, QClipboard.Clipboard)
 
     @pyqtProperty(int, notify=keyChanged)
     def p(self) -> int:
@@ -34,14 +52,8 @@ class ElHamalDecryptor(QObject):
 
     @pyqtProperty(str, notify=keyChanged)
     def sourceMessage(self) -> str:
-        keys = [self._p, self._g, self._y, self._x]
-        result = ''
-        try:
-            cryptogram = ElHamal.cryptogram_from_string(self._encryptedMessage)
-            result = ElHamal.decrypt(cryptogram, keys)
-        except:
-            result = 'error'
-        return result
+        self.decryptMessage()
+        return self._sourceMessage
 
     @pyqtProperty(str, notify=keyChanged)
     def encryptedMessage(self) -> str:
@@ -76,4 +88,14 @@ class ElHamalDecryptor(QObject):
         self._encryptedMessage = encryptedMessage
         self.encryptedMessageChanged.emit()
         self.sourceMessageChanged.emit()
+
+    def decryptMessage(self):
+        keys = [self._p, self._g, self._y, self._x]
+        result = ''
+        try:
+            cryptogram = ElHamal.cryptogram_from_string(self._encryptedMessage)
+            result = ElHamal.decrypt(cryptogram, keys)
+        except:
+            result = 'error'
+        self._sourceMessage = result
 
