@@ -5,9 +5,8 @@ import QtQuick.Layouts 1.3
 import elhamal 1.0
 
 ColumnLayout {
-
+    id: root
     anchors.fill: parent
-    anchors.margins: 20
 
     Encryptor {
         id: encryptor

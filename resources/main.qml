@@ -7,8 +7,11 @@ ApplicationWindow {
 
     visible: true
     title: qsTr("El Hamal")
-    minimumWidth: 320
-    minimumHeight: 640
+    minimumWidth: 480
+    minimumHeight: 480
+
+    onWidthChanged: print(width, height)
+    onHeightChanged: print(width, height)
 
     footer: TabBar {
         id: bar
@@ -23,20 +26,27 @@ ApplicationWindow {
         }
     }
 
-    StackLayout {
+    ScrollView {
         anchors.fill: parent
-        currentIndex: bar.currentIndex
+        ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+        ScrollBar.vertical.policy: ScrollBar.AlwaysOn
 
-        Item {
-            GenKeys {}
-        }
+        StackLayout {
+            anchors.fill: parent
+            anchors.margins: 20
+            currentIndex: bar.currentIndex
 
-        Item {
-            Encrypt {}
-        }
+            Item {
+                GenKeys {}
+            }
 
-        Item {
-            Decrypt {}
+            Item {
+                Encrypt {}
+            }
+
+            Item {
+                Decrypt {}
+            }
         }
     }
 }

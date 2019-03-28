@@ -9,7 +9,7 @@ class ElHamal:
         random.seed()
 
     @staticmethod
-    def encrypt(text, public_key) -> list:
+    def encrypt(text: str, public_key: list) -> list:
         result = list(
             map(lambda letter: ElHamal.encrypt_symbol(letter, public_key),
                 text)
@@ -17,20 +17,20 @@ class ElHamal:
         return result
 
     @staticmethod
-    def cryptogram_to_str(cryptogram) -> str:
+    def cryptogram_to_str(cryptogram: list) -> str:
         result = ' '.join(
             [str(letter) for bigram in cryptogram for letter in bigram])
         return result
 
     @staticmethod
-    def cryptogram_from_string(cryptogram_str) -> list:
+    def cryptogram_from_string(cryptogram_str: str) -> list:
         result = [int(x) for x in cryptogram_str.split(' ')]
-        result = [result[i:i+2] for i in range(0, len(result)-2, 2)]
+        result = [result[i:i + 2] for i in range(0, len(result) - 1, 2)]
         result = list(result)
         return result
 
     @staticmethod
-    def decrypt(cryptogram, keys) -> str:
+    def decrypt(cryptogram: list, keys: list) -> str:
         result = ''.join(
             map(lambda crypto_pare: ElHamal.decrypt_symbol(crypto_pare, keys),
                 cryptogram)
@@ -38,7 +38,7 @@ class ElHamal:
         return result
 
     @staticmethod
-    def encrypt_symbol(sym, public_key) -> list:
+    def encrypt_symbol(sym: str, public_key: list) -> list:
         p, g, y = public_key
         num = ord(sym)
         k = ElHamal.gen_k(p)
@@ -48,32 +48,32 @@ class ElHamal:
         return result
 
     @staticmethod
-    def decrypt_symbol(digram, keys) -> str:
+    def decrypt_symbol(digram: list, keys: list) -> str:
         p, g, y, x = keys
         a, b = digram
         num = (pow(pow(a, x, p), (p - 2), p) * b) % p
         result = chr(num)
         return result
 
-    def gen_keys(self):
+    def gen_keys(self) -> list:
         p = random.choice(self.prime_numbers())
         g = self.get_random_primitive_root_by_mod(p)
         x = random.choice(range(2, p - 1))
         y = pow(g, x, p)
         while y == 1:
-            x = random.choice(range(2, p-1))
+            x = random.choice(range(2, p - 1))
             y = pow(g, x, p)
         return [p, g, y, x]
 
     @staticmethod
-    def is_prime(num) -> bool:
+    def is_prime(num: int) -> bool:
         result = num > 1
         result &= all(
             num % i for i in islice(count(2), int(math.sqrt(num) - 1)))
         return result
 
     @staticmethod
-    def fast_pow(num, power, mod):
+    def fast_pow(num: int, power: int, mod: int) -> int:
         result = 1
         while power > 0:
             if power % 2 == 1:
@@ -83,14 +83,14 @@ class ElHamal:
         return result
 
     @staticmethod
-    def gen_k(p):
+    def gen_k(p: int) -> int:
         result = random.randint(2, p - 1)
         while math.gcd(result, p - 1) != 1:
             result = random.randint(2, p - 1)
         return result
 
     @staticmethod
-    def prime_numbers(end=2 ** 16, start=2 ** 14) -> list:
+    def prime_numbers(end: int = 2 ** 16, start: int = 2 ** 14) -> list:
         last_number = end + 1
         end_of_range_for_filter = int(math.sqrt(last_number))
         result = [2] + list(range(3, last_number, 2))
@@ -100,36 +100,25 @@ class ElHamal:
         return result
 
     @staticmethod
-    def mod_pow(number, power, mod):
-        result = 1
-        while power > 0:
-            if power % 2 == 0:
-                result = (result ** number) % mod
-                power /= 2
-            else:
-                result = (result * number) % mod
-                power -= 1
-        return result
-
-    @staticmethod
-    def is_mutually_prime(a, b):
+    def is_mutually_prime(a: int, b: int) -> bool:
         return math.gcd(a, b) == 1 and (a != 1 or b != 1)
 
     @staticmethod
-    def euler_function(n):
+    def euler_function(n: int) -> int:
         result = list(filter(lambda x: ElHamal.is_mutually_prime(x, n),
                              range(n)))
         return len(result)
 
     @staticmethod
-    def factorize(number):
+    def factorize(number: int) -> list:
         result = list(filter(lambda x: number % x == 0, range(2, number + 1)))
         for x in result:
             result = list(filter(lambda k: x == k or k % x != 0, result))
         return result
 
     @staticmethod
-    def is_primitive_root_by_mod(possible_primitive_root, mod):
+    def is_primitive_root_by_mod(possible_primitive_root: int,
+                                 mod: int) -> bool:
         result = True
         phi = ElHamal.euler_function(mod)
         factors = ElHamal.factorize(phi)
@@ -142,7 +131,7 @@ class ElHamal:
         return result
 
     @staticmethod
-    def find_all_primitive_roots(mod):
+    def find_all_primitive_roots(mod: int) -> list:
         result = []
         phi = ElHamal.euler_function(mod)
         factors = ElHamal.factorize(phi)
@@ -155,6 +144,6 @@ class ElHamal:
         return result
 
     @staticmethod
-    def get_random_primitive_root_by_mod(mod):
+    def get_random_primitive_root_by_mod(mod: int) -> int:
         result = random.choice(ElHamal.find_all_primitive_roots(mod))
         return result
